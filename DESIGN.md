@@ -59,7 +59,7 @@ The AI Prep Tool is designed to improve student learning outcomes through adapti
 
 ## 7. Future Enhancements
 - Expand AI model for personalized learning styles
-- Integrate voice-based AI for verbal question practice
+- Implement reward/leaderboard system to further incentivize student engangement and bolster effectiveness
 - Develop API for integration with school LMS platforms
 
 ## 8. Security & Compliance
