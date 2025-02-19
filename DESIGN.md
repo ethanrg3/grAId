@@ -1,4 +1,3 @@
-```md
 # AI Prep Tool - System Design Document
 
 ## 1. Overview
@@ -75,5 +74,5 @@ The AI Prep Tool is designed to improve student learning outcomes through adapti
 
 ## 10. Conclusion
 The AI Prep Tool is built to provide a robust, adaptive learning experience by continuously analyzing student performance and reinforcing concepts. By leveraging AI-driven error detection, customized notifications, and engagement strategies, it ensures students improve their understanding efficiently.
-```
+
 
