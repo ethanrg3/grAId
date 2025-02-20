@@ -1,4 +1,4 @@
-# PrepAI- System Design Document
+# PrepAI - System Design Document
 
 ## 1. Overview
 PrepAI is designed to improve student learning outcomes through adaptive questioning and reinforcement techniques. This document outlines the system architecture, data flow, key components, and API endpoints.
@@ -21,14 +21,17 @@ PrepAI is designed to improve student learning outcomes through adaptive questio
 
 ## 3. Data Flow
 1. **Student Interaction**
-   - Takes an initial assessment
-   - Answers multiple-choice questions (10 choices per question)
+   - Takes an initial "easy" assessment
+   - Answers 20 multiple-choice questions
    - Data is logged into the system
+   - Student retakes test with new questions, including the same questions he/she missed
+      - These will have a different permutation of wrong answer choices and the right answer choice
 
 2. **AI Processing**
-   - Analyzes incorrect responses
-   - Reorders answer choices to prevent pattern recognition
-   - Identifies mistake patterns (e.g., misreading, misinterpretation)
+   - Analyzes incorrect responses, updating student data according to the specific wrong answer choice student chose
+   - Continues to retest until no missed questions
+   - Identifies mistake patterns and spits out the next quiz/test that attempts to trip student up in new way
+      - This can be with content, ordering of right/wrong answer choices, and other methods to be determined
 
 3. **Statistical Analysis & Correlation Mapping**
    - Runs longitudinal analysis of student mistakes
@@ -36,7 +39,7 @@ PrepAI is designed to improve student learning outcomes through adaptive questio
    - Finds correlations and patterns to inform new testing approaches 
    
 4. **Reinforcement Delivery**
-   - Sends targeted push notifications with previously missed questions
+   - Sends targeted push notifications with one previously missed question at a time
    - Engages students throughout the day for retention
    - Updates student performance records dynamically
 
@@ -49,11 +52,14 @@ PrepAI is designed to improve student learning outcomes through adaptive questio
 ## 5. API Endpoints & CRUD Methods
 ### 5.1 Authentication
 - **Register a user** (`POST /api/register`)
-  - Creates a new user with username, handedness, and gender.
+  - Creates a new user.
   - **Request:**
     ```json
     {
       "username": "john_doe",
+      "email": "jdoe@gmail.com",
+      "password": "Password123",
+      "grade": "junior",
       "handedness": "right",
       "gender": "male"
     }
@@ -62,6 +68,7 @@ PrepAI is designed to improve student learning outcomes through adaptive questio
     ```json
     {"message": "User registered successfully"}
     ```
+- **Forgot email** (`POST /api/`)
 
 - **User login** (`POST /api/login`)
   - Authenticates user credentials.
@@ -125,14 +132,14 @@ PrepAI is designed to improve student learning outcomes through adaptive questio
 - Gamification elements (streaks, achievements) to encourage participation.
 
 ## 7. Future Enhancements
-- Expand AI model for personalized learning styles.
-- Integrate voice-based AI for verbal question practice.
-- Develop API for integration with school LMS platforms.
+- Beta test with students in homeschool and charter schools for quicker adoption
+- Secure partnerships with businesses to reward students with gift cards for completing questions
+- Implement leaderboard/gamification system to increase student engagement and subsequent test scores
 
 ## 8. Security & Compliance
 - **Data Encryption**: All user data is encrypted at rest and in transit.
 - **Privacy Compliance**: GDPR and COPPA compliant for student data protection.
-- **Access Control**: Role-based authentication for students and educators.
+- **Access Control**: Role-based authentication for students, parents, and educators.
 
 ## 9. Deployment & Scaling Strategy
 - Deployed on AWS/GCP with auto-scaling groups.
@@ -140,4 +147,4 @@ PrepAI is designed to improve student learning outcomes through adaptive questio
 - CI/CD pipeline for continuous updates and improvements.
 
 ## 10. Conclusion
-The AI Prep Tool is built to provide a robust, adaptive learning experience by continuously analyzing student performance and reinforcing concepts. By leveraging AI-driven error detection, customized notifications, and statistical analysis of learning patterns, the system evolves testing strategies dynamically to improve student mastery.
+PrepAI is built to provide a robust, adaptive learning experience by continuously analyzing student performance and reinforcing concepts. By leveraging AI-driven error detection, customized notifications, and statistical analysis of learning patterns, the system evolves testing strategies dynamically to improve student mastery.
