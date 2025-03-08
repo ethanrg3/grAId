@@ -1,0 +1,104 @@
+grAId/
+│── backend/                        # Core logic and API handling
+│   ├── models/                     # IRT models and ML components
+│   │   ├── ability_estimation.py    # Maximum Likelihood & Bayesian estimation (MAP/EAP)
+│   │   ├── item_response.py         # 3PL (and future 4PL) item parameterization
+│   │   ├── adaptive_selection.py    # Dynamic question selection based on Fisher information
+│   │   ├── feedback_engine.py       # Personalized feedback & explanations
+│   │   ├── strategy_toolkit.py      # Adaptive test-taking strategy recommendations
+│   │   └── __init__.py              # Package initializer
+│   ├── api/                        # Backend API endpoints
+│   │   ├── routes/
+│   │   │   ├── questions.py         # Endpoints for fetching & submitting responses
+│   │   │   ├── users.py             # User registration & profile management
+│   │   │   ├── analytics.py         # Fetch progress & performance tracking
+│   │   │   ├── gamification.py      # Leaderboards, badges, challenges
+│   │   │   └── __init__.py
+│   │   ├── main.py                  # FastAPI/Django app entry point
+│   │   └── __init__.py
+│   ├── database/                    # Database handling
+│   │   ├── models.py                # PostgreSQL models (Users, Questions, Responses)
+│   │   ├── migrations/              # Database schema changes
+│   │   └── db_connection.py         # Database connection logic
+│   ├── utils/                       # Utility functions
+│   │   ├── caching.py               # Redis-based caching
+│   │   ├── task_queue.py            # Celery task processing
+│   │   ├── logging.py               # Logging setup
+│   │   ├── config.py                # Configuration settings
+│   │   └── __init__.py
+│   └── tests/                       # Unit & integration tests
+│       ├── test_models.py           # Tests for IRT models
+│       ├── test_api.py              # Tests for API endpoints
+│       ├── test_adaptive.py         # Tests for question selection logic
+│       ├── test_feedback.py         # Tests for feedback system
+│       ├── test_gamification.py     # Tests for gamification features
+│       └── __init__.py
+│
+├── frontend/                        # React.js-based UI
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── QuestionInterface.js # Adaptive question UI
+│   │   │   ├── Dashboard.js         # Progress & analytics dashboard
+│   │   │   ├── StrategyToolkit.js   # Strategy suggestions & drills
+│   │   │   ├── Leaderboard.js       # Gamification leaderboard
+│   │   │   ├── Notifications.js     # Smart alerts & reminders
+│   │   │   └── Navbar.js            # Navigation bar
+│   │   ├── pages/
+│   │   │   ├── Home.js              # Landing page
+│   │   │   ├── TestSession.js       # Test-taking environment
+│   │   │   ├── Progress.js          # Performance visualization
+│   │   │   ├── Strategies.js        # Personalized test strategies
+│   │   │   ├── Settings.js          # User settings
+│   │   │   └── Login.js             # Authentication
+│   │   ├── utils/
+│   │   │   ├── api.js               # API interaction logic
+│   │   │   ├── auth.js              # Authentication helpers
+│   │   │   ├── formatters.js        # Formatting functions
+│   │   │   └── constants.js         # Shared constants
+│   │   ├── App.js                   # Main React app entry point
+│   │   ├── index.js                 # ReactDOM render setup
+│   │   ├── styles.css               # TailwindCSS styling
+│   │   └── package.json             # Dependencies & scripts
+│
+├── infra/                           # Infrastructure and deployment
+│   ├── docker/
+│   │   ├── Dockerfile               # Containerization setup
+│   │   ├── docker-compose.yml       # Docker Compose configuration
+│   ├── kubernetes/
+│   │   ├── deployment.yaml          # K8s deployment configuration
+│   │   ├── service.yaml             # K8s service definition
+│   │   ├── ingress.yaml             # Load balancing & routing
+│   ├── scripts/
+│   │   ├── deploy.sh                # Deployment automation script
+│   │   ├── setup_db.sh              # Database setup script
+│   ├── cloud/                       # AWS/GCP setup
+│   │   ├── terraform/               # Infrastructure-as-code setup
+│   │   ├── cloud_functions/         # Cloud-based async processing
+│   │   └── storage/                 # S3/GCS file storage handling
+│   └── monitoring/
+│       ├── prometheus.yaml          # Performance monitoring setup
+│       ├── grafana-dashboard.json   # Visualization dashboard
+│       ├── logging_config.json      # Logging and error tracking
+│       └── alerts.yaml              # Alerting rules
+│
+├── docs/                            # Documentation & research
+│   ├── api_reference.md             # API documentation
+│   ├── architecture.md              # System architecture & flow
+│   ├── roadmap.md                   # Development roadmap
+│   ├── IRT_research.md              # IRT research & implementation notes
+│   ├── test_strategies.md           # Test-taking strategies research
+│   ├── data_collection.md           # Data gathering & model training
+│   └── gamification_design.md       # Gamification feature breakdown
+│
+├── .github/                         # CI/CD and GitHub workflows
+│   ├── workflows/
+│   │   ├── ci.yml                   # Continuous integration workflow
+│   │   ├── cd.yml                   # Deployment automation
+│   │   ├── linting.yml              # Linting & code quality checks
+│   ├── ISSUE_TEMPLATE.md            # Bug report & feature request template
+│   ├── PULL_REQUEST_TEMPLATE.md     # Guidelines for PR submissions
+│   └── CODEOWNERS                   # Ownership & review assignment
+│
+├── README.md                        # Project overview
+├── .gitignore                        # Files to ignore in version control
+└── requirements.txt                  # Backend dependencies
