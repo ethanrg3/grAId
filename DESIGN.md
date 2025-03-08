@@ -1,150 +1,129 @@
-# PrepAI - System Design Document
+**grAId Adaptive Testing System: IRT-Based Design Document**
 
-## 1. Overview
-PrepAI is designed to improve student learning outcomes through adaptive questioning and reinforcement techniques. This document outlines the system architecture, data flow, key components, and API endpoints.
+## **1. Overview**
+The grAId platform leverages **Item Response Theory (IRT)** as the foundation for its AI-driven adaptive question sets. The system is designed to provide a highly personalized test-prep experience by continuously updating student ability estimates, adjusting question difficulty dynamically, and analyzing test-taking behavior. By structuring the test-taking experience around IRT principles, grAId ensures that students are always challenged at an optimal level, leading to faster learning and improved retention.
 
-## 2. System Architecture
-### 2.1 Components
-- **Frontend**: Mobile app for students to engage with the system.
-- **Backend**: AI engine for question adaptation, user data processing, and performance tracking.
-- **Database**: Stores student responses, question sets, analytics, and longitudinal statistical analysis data.
-- **Notification System**: Pushes questions and reminders at strategic intervals.
-- **Analytics Engine**: Runs statistical analysis to find correlations and trends in student mistakes.
+## **2. Core Principles of IRT in grAId**
 
-### 2.2 Tech Stack
-- **Frontend**: React Native (iOS & Android support)
-- **Backend**: Python (FastAPI or Django for API endpoints)
-- **Database**: PostgreSQL for structured data storage
-- **AI Engine**: TensorFlow/PyTorch for question selection and response analysis
-- **Analytics Engine**: Pandas/NumPy for statistical analysis of mistakes over time
-- **Notification System**: Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNs)
+### **2.1 Ability Estimation (θ)**
+Each student is assigned a **latent ability score (θ)**, which represents their test-taking proficiency. This score is dynamically updated after each response, ensuring real-time adaptation. The system uses various estimation techniques:
+- **Maximum Likelihood Estimation (MLE):** Updates ability estimates based on correct/incorrect responses.
+- **Bayesian Estimation (MAP/EAP):** Uses prior distributions to refine ability estimates, especially for students with limited response data.
 
-## 3. Data Flow
-1. **Student Interaction**
-   - Takes an initial "easy" assessment
-   - Answers 20 multiple-choice questions
-   - Data is logged into the system
-   - Student retakes test with new questions, including the same questions he/she missed
-      - These will have a different permutation of wrong answer choices and the right answer choice
+### **2.2 Item Characterization Using the 3PL Model**
+Each question is parameterized using the **Three-Parameter Logistic (3PL) model**, defined as:
 
-2. **AI Processing**
-   - Analyzes incorrect responses, updating student data according to the specific wrong answer choice student chose
-   - Continues to retest until no missed questions
-   - Identifies mistake patterns and spits out the next quiz/test that attempts to trip student up in new way
-      - This can be with content, ordering of right/wrong answer choices, and other methods to be determined
+\[ P_i(\theta) = c_i + (1 - c_i) \frac{1}{1 + e^{-a_i(\theta - b_i)}} \]
 
-3. **Statistical Analysis & Correlation Mapping**
-   - Runs longitudinal analysis of student mistakes
-   - Compares student errors against similar student profiles (e.g., handedness)
-   - Finds correlations and patterns to inform new testing approaches 
-   
-4. **Reinforcement Delivery**
-   - Sends targeted push notifications with one previously missed question at a time
-   - Engages students throughout the day for retention
-   - Updates student performance records dynamically
+where:
+- **\( P_i(	heta) \):** Probability of a correct response given ability \( 	heta \).
+- **\( b_i \):** Item difficulty (higher values indicate harder questions).
+- **\( a_i \):** Item discrimination (higher values mean the question is better at distinguishing high- and low-ability students).
+- **\( c_i \):** Guessing parameter (accounts for students answering correctly by chance).
 
-## 4. Personalization Features
-- Collects **handedness** (left/right) and **gender** (male/female) to analyze cognitive learning trends
-- Generates customized question sets based on mistake history
-- Adapts difficulty dynamically based on student progress
-- Uses statistical modeling to compare student mistakes against similar profiles and recommend alternative testing approaches
+A future **4PL extension** may introduce a slipping parameter \( d_i \) to account for careless mistakes.
 
-## 5. API Endpoints & CRUD Methods
-### 5.1 Authentication
-- **Register a user** (`POST /api/register`)
-  - Creates a new user.
-  - **Request:**
-    ```json
-    {
-      "username": "john_doe",
-      "email": "jdoe@gmail.com",
-      "password": "Password123",
-      "grade": "junior",
-      "handedness": "right",
-      "gender": "male"
-    }
-    ```
-  - **Response:**
-    ```json
-    {"message": "User registered successfully"}
-    ```
-- **Forgot email** (`POST /api/`)
+### **2.3 Adaptive Question Selection**
+- After each response, the system updates \( 	heta \) and selects the next question to maximize information gain.
+- Items are chosen based on **maximum Fisher information**, ensuring that the test remains informative for the student’s current skill level.
+- The difficulty of subsequent questions dynamically adjusts, keeping the student in a zone of optimal challenge (neither too easy nor too hard).
 
-- **User login** (`POST /api/login`)
-  - Authenticates user credentials.
-  - Returns authentication token for session management.
+### **2.4 Student Toolkit for Test-Taking Strategies**
+- The system maintains a **personalized Toolkit** of test-taking strategies for each student.
+- Strategies are recommended based on the student’s testing behavior, such as:
+  - **Time management techniques** if response times are inconsistent.
+  - **Process of elimination** for students frequently choosing incorrect distractors.
+  - **Reading comprehension strategies** for students struggling with long passages.
+- The Toolkit continuously updates as the model gathers more data on the student’s strengths and weaknesses.
+- Students receive **adaptive strategy drills** based on areas needing improvement.
 
-### 5.2 Question Management
-- **Retrieve all questions** (`GET /api/questions`)
-  - Returns all available questions.
+## **3. Adaptive Testing Flow**
 
-- **Retrieve a specific question** (`GET /api/questions/{question_id}`)
-  - Fetches a single question by its ID.
+### **3.1 Initial Assessment**
+- Students begin with a **calibrated pre-test** to obtain an initial \( 	heta \) estimate.
+- The system selects diverse questions to cover a range of difficulties.
+- The initial ability level is computed using MLE or Bayesian priors.
 
-- **Submit an answer** (`POST /api/questions/submit`)
-  - Logs the student’s answer and updates performance tracking.
-  - **Request:**
-    ```json
-    {
-      "username": "john_doe",
-      "question_id": 1,
-      "selected_answer": 2
-    }
-    ```
-  - **Response:**
-    ```json
-    {"correct": true}
-    ```
+### **3.2 Dynamic Questioning**
+- As students answer, the system continually refines \( 	heta \).
+- New questions are chosen dynamically, ensuring engagement and optimal challenge.
+- Questions that provide **high information gain** are prioritized.
 
-- **Get missed questions** (`GET /api/questions/missed/{username}`)
-  - Returns a list of missed questions for reinforcement.
+### **3.3 Real-Time Ability Estimation**
+After each question, ability \( 	heta \) is updated using:
 
-### 5.3 Performance Tracking & Statistical Analysis
-- **Fetch student progress** (`GET /api/performance/progress/{username}`)
-  - Retrieves statistics on student performance.
+- **MLE updates** based on response patterns.
+- **MAP estimation** with priors when student data is limited.
+- **EAP estimation** integrating all past responses for a stable estimate.
 
-- **Identify mistake categories** (`GET /api/performance/errors/{username}`)
-  - Analyzes trends in incorrect responses.
-  
-- **Run statistical analysis on mistakes** (`GET /api/performance/analysis/{username}`)
-  - Compares student errors with other similar profiles to find learning patterns and new testing methods.
-  
-### 5.4 Admin Management
-- **Add a new question** (`POST /api/questions/add`)
-  - **Request:**
-    ```json
-    {
-      "question": "What is 5 + 3?",
-      "answers": ["6", "7", "8", "9", "10"],
-      "correct": 2
-    }
-    ```
+### **3.4 Feedback and Reinforcement**
+- Students receive immediate feedback on their answers.
+- Explanations highlight **why** an answer is correct/incorrect.
+- Practice sets target **specific weak areas**, ensuring focused learning.
+- **Toolkit recommendations** provide students with actionable strategies to improve future performance.
 
-- **Update a question** (`PUT /api/questions/{question_id}`)
-  - Allows modification of existing questions.
+### **3.5 Longitudinal Tracking**
+- Performance is visualized over time using progress dashboards.
+- The system detects improvement trends and stagnation patterns.
+- **Adaptive revision sets** help reinforce weak areas over extended periods.
+- The **Toolkit evolves** based on performance data, ensuring students receive up-to-date strategy recommendations.
 
-- **Delete a question** (`DELETE /api/questions/{question_id}`)
-  - Removes a question from the system.
+## **4. Data Collection & Model Training**
 
-## 6. Notification & Engagement
-- Push notifications triggered based on missed questions.
-- Adjustable frequency settings to balance engagement and avoidance.
-- Gamification elements (streaks, achievements) to encourage participation.
+### **4.1 Data Inputs**
+- **Response data:** Correct/incorrect answers.
+- **Time spent per question:** Detects hesitation or overconfidence.
+- **Pattern recognition:** Tracks frequent mistakes and tendencies (e.g., guessing behavior).
+- **Strategy success tracking:** Evaluates which test-taking techniques are improving student outcomes.
 
-## 7. Future Enhancements
-- Beta test with students in homeschool and charter schools for quicker adoption
-- Secure partnerships with businesses to reward students with gift cards for completing questions
-- Implement leaderboard/gamification system to increase student engagement and subsequent test scores
+### **4.2 Model Training and Calibration**
+- **Initial model training:** Uses historical test data to fit 3PL parameters for each item.
+- **Ongoing calibration:** Adjusts difficulty/discrimination parameters as more data is collected.
+- **Quality control:** Poorly performing items are flagged for review.
+- **Strategy effectiveness analysis:** The system continuously refines which Toolkit strategies are most effective based on student performance improvements.
 
-## 8. Security & Compliance
-- **Data Encryption**: All user data is encrypted at rest and in transit.
-- **Privacy Compliance**: GDPR and COPPA compliant for student data protection.
-- **Access Control**: Role-based authentication for students, parents, and educators.
+## **5. Gamification & Engagement Features**
 
-## 9. Deployment & Scaling Strategy
-- Deployed on AWS/GCP with auto-scaling groups.
-- Containerized using Docker & Kubernetes.
-- CI/CD pipeline for continuous updates and improvements.
+### **5.1 Leaderboards**
+- Students earn rankings based on improvement and accuracy.
+- Competitive elements encourage consistent engagement.
 
-## 10. Conclusion
-PrepAI is built to provide a robust, adaptive learning experience by continuously analyzing student performance and reinforcing concepts. By leveraging AI-driven error detection, customized notifications, and statistical analysis of learning patterns, the system evolves testing strategies dynamically to improve student mastery.
+### **5.2 Progress Badges**
+- Awards for milestones (e.g., “Mastered Algebra” or “Accuracy +20%”).
+- Encourages goal-oriented learning.
+
+### **5.3 Streaks & Challenges**
+- Daily streak rewards for consistent practice.
+- Adaptive challenges that increase in difficulty based on recent performance.
+
+### **5.4 Smart Notifications**
+- Alerts for **weak area reinforcement** (e.g., “You’ve struggled with probability—practice now!”).
+- Customizable reminders for scheduled study sessions.
+- **Strategy prompts** for students to apply their personalized Toolkit techniques.
+
+## **6. Implementation Roadmap**
+
+### **6.1 Phase 1: Core IRT Model Development**
+- Implement IRT-based **ability estimation**.
+- Develop an **initial question bank** with calibrated difficulty parameters.
+- Build the **initial version of the Toolkit** with common test-taking strategies.
+
+### **6.2 Phase 2: UI/UX & Gamification**
+- Build **interactive question interfaces** that adapt in real time.
+- Integrate **leaderboards, badges, and progress tracking**.
+- Enhance the **Toolkit dashboard** for easy strategy access.
+
+### **6.3 Phase 3: Pilot Testing & Refinement**
+- Deploy in **small-scale trials**.
+- Collect response data to **refine question parameters**.
+- Optimize **feedback, engagement, and strategy recommendations**.
+
+### **6.4 Phase 4: Full Deployment & Continuous Learning**
+- Scale system-wide **adaptive testing across all users**.
+- Regularly update question parameters using **new student data**.
+- Implement **automated error detection** for poorly performing items.
+- Expand **Toolkit strategies** to provide more personalized test-taking methods.
+
+## **Conclusion**
+By integrating IRT-based adaptive learning with a **constantly evolving Toolkit of testing strategies**, grAId ensures that students receive **personalized question sets and strategic guidance**. The system’s **real-time ability tracking, adaptive questioning, and engagement-driven design** set it apart from traditional test-prep methods. With continuous refinement through data collection and machine learning, grAId will **revolutionize test preparation** and maximize student success.
+
