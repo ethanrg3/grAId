@@ -16,7 +16,7 @@ Each question is parameterized using the **Three-Parameter Logistic (3PL) model*
 \[ P_i(\theta) = c_i + (1 - c_i) \frac{1}{1 + e^{-a_i(\theta - b_i)}} \]
 
 where:
-- **\( P_i(	heta) \):** Probability of a correct response given ability \( 	heta \).
+- **\( P_i(theta) \):** Probability of a correct response given ability \( 	theta \).
 - **\( b_i \):** Item difficulty (higher values indicate harder questions).
 - **\( a_i \):** Item discrimination (higher values mean the question is better at distinguishing high- and low-ability students).
 - **\( c_i \):** Guessing parameter (accounts for students answering correctly by chance).
@@ -24,7 +24,7 @@ where:
 A future **4PL extension** may introduce a slipping parameter \( d_i \) to account for careless mistakes.
 
 ### **2.3 Adaptive Question Selection**
-- After each response, the system updates \( 	heta \) and selects the next question to maximize information gain.
+- After each response, the system updates \( 	theta \) and selects the next question to maximize information gain.
 - Items are chosen based on **maximum Fisher information**, ensuring that the test remains informative for the student’s current skill level.
 - The difficulty of subsequent questions dynamically adjusts, keeping the student in a zone of optimal challenge (neither too easy nor too hard).
 
@@ -40,17 +40,17 @@ A future **4PL extension** may introduce a slipping parameter \( d_i \) to accou
 ## **3. Adaptive Testing Flow**
 
 ### **3.1 Initial Assessment**
-- Students begin with a **calibrated pre-test** to obtain an initial \( 	heta \) estimate.
+- Students begin with a **calibrated pre-test** to obtain an initial \( 	theta \) estimate.
 - The system selects diverse questions to cover a range of difficulties.
 - The initial ability level is computed using MLE or Bayesian priors.
 
 ### **3.2 Dynamic Questioning**
-- As students answer, the system continually refines \( 	heta \).
+- As students answer, the system continually refines \( 	theta \).
 - New questions are chosen dynamically, ensuring engagement and optimal challenge.
 - Questions that provide **high information gain** are prioritized.
 
 ### **3.3 Real-Time Ability Estimation**
-After each question, ability \( 	heta \) is updated using:
+After each question, ability \( 	theta \) is updated using:
 
 - **MLE updates** based on response patterns.
 - **MAP estimation** with priors when student data is limited.
