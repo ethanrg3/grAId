@@ -29,7 +29,7 @@ A future **4PL extension** may introduce a slipping parameter \( d_i \) to accou
 - The difficulty of subsequent questions dynamically adjusts, keeping the student in a zone of optimal challenge (neither too easy nor too hard).
 
 ### **2.4 Student Toolkit for Test-Taking Strategies**
-- The system maintains a **personalized Toolkit** of test-taking strategies for each student.
+- The system maintains a **personalized Toolkit** of research-backed, test-taking strategies for each student.
 - Strategies are recommended based on the student’s testing behavior, such as:
   - **Time management techniques** if response times are inconsistent.
   - **Process of elimination** for students frequently choosing incorrect distractors.
@@ -101,24 +101,51 @@ After each question, ability \( 	theta \) is updated using:
 - Customizable reminders for scheduled study sessions.
 - **Strategy prompts** for students to apply their personalized Toolkit techniques.
 
-## **6. Implementation Roadmap**
+## **6. Technology Stack and Implementation Details**
 
-### **6.1 Phase 1: Core IRT Model Development**
+### **6.1 Backend**
+- **Python** for core machine learning models and IRT calculations.
+- **FastAPI/Django** for serving the adaptive testing engine.
+- **PostgreSQL** for storing student responses, test items, and model parameters.
+- **Redis** for caching frequently accessed data to enhance performance.
+- **Celery** for background task processing (e.g., updating ability estimates asynchronously).
+
+### **6.2 Machine Learning & IRT Model Implementation**
+- **Scikit-learn & TensorFlow/PyTorch** for training and fine-tuning models.
+- **NumPy & SciPy** for statistical computations.
+- **PyMC3** for Bayesian estimation of student abilities.
+- **Item Response Theory (irt)** package for fitting and evaluating IRT models.
+
+### **6.3 Frontend**
+- **React.js** for building an interactive and responsive UI.
+- **TailwindCSS** for styling.
+- **Chart.js & D3.js** for data visualization and student progress tracking.
+- **WebSockets** for real-time updates (e.g., adaptive question selection and leaderboard changes).
+
+### **6.4 Infrastructure**
+- **AWS/GCP** for cloud deployment (compute instances, storage, and databases).
+- **Docker & Kubernetes** for containerized deployment and scalability.
+- **CI/CD with GitHub Actions** to automate testing and deployment.
+- **GraphQL/REST API** to facilitate efficient data fetching and communication between frontend and backend.
+
+## **7. Implementation Roadmap**
+
+### **7.1 Phase 1: Core IRT Model Development**
 - Implement IRT-based **ability estimation**.
 - Develop an **initial question bank** with calibrated difficulty parameters.
 - Build the **initial version of the Toolkit** with common test-taking strategies.
 
-### **6.2 Phase 2: UI/UX & Gamification**
+### **7.2 Phase 2: UI/UX & Gamification**
 - Build **interactive question interfaces** that adapt in real time.
 - Integrate **leaderboards, badges, and progress tracking**.
 - Enhance the **Toolkit dashboard** for easy strategy access.
 
-### **6.3 Phase 3: Pilot Testing & Refinement**
+### **7.3 Phase 3: Pilot Testing & Refinement**
 - Deploy in **small-scale trials**.
 - Collect response data to **refine question parameters**.
 - Optimize **feedback, engagement, and strategy recommendations**.
 
-### **6.4 Phase 4: Full Deployment & Continuous Learning**
+### **7.4 Phase 4: Full Deployment & Continuous Learning**
 - Scale system-wide **adaptive testing across all users**.
 - Regularly update question parameters using **new student data**.
 - Implement **automated error detection** for poorly performing items.
