@@ -1,2 +1,33 @@
+# Backend dependencies for grAId's adaptive testing system
+
+# Core backend framework
 fastapi
 uvicorn
+
+django  # If using Django instead of FastAPI
+
+# Database and ORM
+sqlalchemy
+psycopg2  # PostgreSQL adapter
+redis  # Caching support
+celery  # Background task processing
+
+# Machine Learning & Statistical Computation
+numpy
+scipy
+scikit-learn
+pymc3  # Bayesian estimation for ability scores
+irt  # Item Response Theory package
+
+tensorflow  # Deep learning models (optional for advanced adaptations)
+torch  # PyTorch alternative
+
+# Data Processing & Utilities
+pandas
+matplotlib  # Visualization (if needed for debugging)
+
+dotenv  # Environment variable management
+
+# Testing
+pytest
+pytest-asyncio
