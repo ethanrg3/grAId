@@ -1,7 +1,7 @@
 # Implements ability estimation methods using Multidimensional IRT (MIRT) principles
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import multivariate_normal, norm
 from scipy.optimize import minimize
 
 def likelihood(theta, responses, items):
@@ -36,27 +36,37 @@ def map_estimation(responses, items, prior_mu=None, prior_sigma=None):
         """
         Compute the negative log-posterior for MAP estimation.
         """
-        return likelihood(theta, responses, items) - np.log(norm.pdf(theta, prior_mu, prior_sigma))
+        log_prior = multivariate_normal.logpdf(theta, prior_mu, prior_sigma) # Compute the log prior probability of the ability vector
+        return likelihood(theta, responses, items) - log_prior # Return the negative log-posterior
     
     result = minimize(posterior, prior_mu, method='BFGS')
     return result.x if result.success else None
 
-def eap_estimation(responses, items, dim=2):
+def eap_estimation(responses, items, prior_mu=None, prior_sigma=None, num_samples=1000):
     """
-    Expected A Posteriori (EAP) Estimation for MIRT ability estimation.
+    Expected A Posteriori (EAP) Estimation for MIRT.
     """
-    pass  
+    dim = len(items[0][0]) # Length of the discrimination vector (a) == number of ability dimensions
+    if prior_mu is None:
+        prior_mu = np.zeros(dim) # Default prior mean is zero for all ability dimensions
+    if prior_sigma is None:
+        prior_sigma = np.eye(dim) # Default prior covariance is the identity matrix
+
+    thetas = np.random.multivariate_normal(prior_mu, prior_sigma, num_samples) # Sample ability vectors from the prior distribution
+    posteriors = np.exp(-np.array([likelihood(theta, responses, items) for theta in thetas])) # Compute the posterior probability for each sample
+    weights = posteriors / np.sum(posteriors) # Normalize the posterior probabilities to get weights
+    return np.sum(thetas * weights[:, np.newaxis], axis=0) # Return the weighted sum of the ability vectors
 
 
-# Example usage
 if __name__ == "__main__":
-    example_responses = [1, 0, 1, 1, 0]  # Example response pattern
-    example_items = [(1.2, 0.5, 0.2), (0.8, 2, 0.15), (1.5, 1.0, 0.25), (1.0, 0.2, 0.2), (0.9, -0.5, 0.1)]
-    
-    theta_mle = mle_estimation(example_responses, example_items)
-    # theta_map = estimator.estimate_map(example_responses, example_items)
-    # theta_eap = estimator.estimate_eap(example_responses, example_items)
-    
-    print(f"MLE Ability Estimate: {theta_mle}")
-    # print(f"MAP Ability Estimate: {theta_map}")
-    # print(f"EAP Ability Estimate: {theta_eap}")
+    # Test the ability estimation methods
+    responses = [1, 0, 1, 0, 1]
+    items = [(np.array([1, 0]), 0, 0.2), (np.array([0, 1]), 0, 0.3), 
+             (np.array([1, 1]), 0, 0.4), (np.array([1, 1]), 0, 0.5), 
+             (np.array([1, 1]), 0, 0.6)]
+    theta_mle = mle_estimation(responses, items)
+    theta_map = map_estimation(responses, items)
+    theta_eap = eap_estimation(responses, items)
+    print("MLE:", theta_mle)
+    print("MAP:", theta_map)
+    print("EAP:", theta_eap)
