@@ -1,12 +1,12 @@
-**grAId Adaptive Testing System: IRT-Based Design Document**
+**grAId Adaptive Testing System: MIRT-Based Design Document**
 
 ## **1. Overview**
-The grAId platform leverages **Item Response Theory (IRT)** as the foundation for its AI-driven adaptive question sets. The system is designed to provide a highly personalized test-prep experience by continuously updating student ability estimates, adjusting question difficulty dynamically, and analyzing test-taking behavior. By structuring the test-taking experience around IRT principles, grAId ensures that students are always challenged at an optimal level, leading to faster learning and improved retention.
+The grAId platform leverages **Multidimensional Item Response Theory (MIRT)** as the foundation for its AI-driven adaptive question sets. The system is designed to provide a highly personalized test-prep experience by continuously updating student ability estimates, adjusting question difficulty dynamically, and analyzing test-taking behavior. By structuring the test-taking experience around MIRT principles, grAId ensures that students are always challenged at an optimal level, leading to faster learning and improved retention.
 
-## **2. Core Principles of IRT in grAId**
+## **2. Core Principles of MIRT in grAId**
 
 ### **2.1 Ability Estimation (θ)**
-Each student is assigned a **latent ability score (θ)**, which represents their test-taking proficiency. This score is dynamically updated after each response, ensuring real-time adaptation. The system uses various estimation techniques:
+Each student is assigned a vector of **latent ability scores (θ)**, which represents their test-taking proficiency/abilities for different categories. These scores are dynamically updated after each response, ensuring real-time adaptation. The system uses various estimation techniques:
 - **Maximum Likelihood Estimation (MLE):** Updates ability estimates based on correct/incorrect responses.
 - **Bayesian Estimation (MAP/EAP):** Uses prior distributions to refine ability estimates, especially for students with limited response data.
 
@@ -40,21 +40,22 @@ A future **4PL extension** may introduce a slipping parameter \( d_i \) to accou
 ## **3. Adaptive Testing Flow**
 
 ### **3.1 Initial Assessment**
-- Students begin with a **calibrated pre-test** to obtain an initial \( 	theta \) estimate.
+- Students begin with a **calibrated pre-test** to obtain an initial vector of \( 	theta \) estimates.
 - The system selects diverse questions to cover a range of difficulties.
-- The initial ability level is computed using MLE or Bayesian priors.
+- The initial ability levels are computed using MLE or Bayesian priors.
 
 ### **3.2 Dynamic Questioning**
-- As students answer, the system continually refines \( 	theta \).
+- As students answer, the system continually refines vector of \( 	theta \).
 - New questions are chosen dynamically, ensuring engagement and optimal challenge.
 - Questions that provide **high information gain** are prioritized.
 
 ### **3.3 Real-Time Ability Estimation**
-After each question, ability \( 	theta \) is updated using:
+After each question, appropriate values of \( 	theta \) are updated using:
 
 - **MLE updates** based on response patterns.
 - **MAP estimation** with priors when student data is limited.
 - **EAP estimation** integrating all past responses for a stable estimate.
+- Other methods for determining what ability value(s) is/are associated with a particular item.
 
 ### **3.4 Feedback and Reinforcement**
 - Students receive immediate feedback on their answers.
@@ -104,17 +105,17 @@ After each question, ability \( 	theta \) is updated using:
 ## **6. Technology Stack and Implementation Details**
 
 ### **6.1 Backend**
-- **Python** for core machine learning models and IRT calculations.
+- **Python** for core machine learning models and MIRT calculations.
 - **FastAPI/Django** for serving the adaptive testing engine.
 - **PostgreSQL** for storing student responses, test items, and model parameters.
 - **Redis** for caching frequently accessed data to enhance performance.
 - **Celery** for background task processing (e.g., updating ability estimates asynchronously).
 
-### **6.2 Machine Learning & IRT Model Implementation**
+### **6.2 Machine Learning & MIRT Model Implementation**
 - **Scikit-learn & TensorFlow/PyTorch** for training and fine-tuning models.
 - **NumPy & SciPy** for statistical computations.
 - **PyMC3** for Bayesian estimation of student abilities.
-- **Item Response Theory (irt)** package for fitting and evaluating IRT models.
+- **Item Response Theory (MIRT)** package for fitting and evaluating MIRT models.
 
 ### **6.3 Frontend**
 - **React.js** for building an interactive and responsive UI.
@@ -130,8 +131,8 @@ After each question, ability \( 	theta \) is updated using:
 
 ## **7. Implementation Roadmap**
 
-### **7.1 Phase 1: Core IRT Model Development**
-- Implement IRT-based **ability estimation**.
+### **7.1 Phase 1: Core MIRT Model Development**
+- Implement MIRT-based **ability estimation**.
 - Develop an **initial question bank** with calibrated difficulty parameters.
 - Build the **initial version of the Toolkit** with common test-taking strategies.
 
@@ -152,5 +153,5 @@ After each question, ability \( 	theta \) is updated using:
 - Expand **Toolkit strategies** to provide more personalized test-taking methods.
 
 ## **Conclusion**
-By integrating IRT-based adaptive learning with a **constantly evolving Toolkit of testing strategies**, grAId ensures that students receive **personalized question sets and strategic guidance**. The system’s **real-time ability tracking, adaptive questioning, and engagement-driven design** set it apart from traditional test-prep methods. With continuous refinement through data collection and machine learning, grAId will **revolutionize test preparation** and maximize student success.
+By integrating MIRT-based adaptive learning with a **constantly evolving Toolkit of testing strategies**, grAId ensures that students receive **personalized question sets and strategic guidance**. The system’s **real-time ability tracking, adaptive questioning, and engagement-driven design** set it apart from traditional test-prep methods. With continuous refinement through data collection and machine learning, grAId will **revolutionize test preparation** and maximize student success.
 
