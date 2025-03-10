@@ -1,16 +1,17 @@
-**grAId Adaptive Testing System: MIRT-Based Design Document**
+**grAId Adaptive Testing System: Deep Learning & MIRT-Based Design Document**
 
 ## **1. Overview**
-The grAId platform leverages **Multidimensional Item Response Theory (MIRT)** as the foundation for its AI-driven adaptive question sets. The system is designed to provide a highly personalized test-prep experience by continuously updating student ability estimates, adjusting question difficulty dynamically, and analyzing test-taking behavior. By structuring the test-taking experience around MIRT principles, grAId ensures that students are always challenged at an optimal level, leading to faster learning and improved retention.
+The grAId platform leverages **Multidimensional Item Response Theory (MIRT)** combined with **Deep Learning** to power its AI-driven adaptive question sets. The system provides a highly personalized test-prep experience by continuously updating student ability estimates, adjusting question difficulty dynamically, and analyzing test-taking behavior. By structuring the test-taking experience around MIRT principles and deep learning, grAId ensures that students are always challenged at an optimal level, leading to faster learning and improved retention.
 
-## **2. Core Principles of MIRT in grAId**
+## **2. Core Principles of Deep Learning & MIRT in grAId**
 
-### **2.1 Ability Estimation (θ)**
-Each student is assigned a vector of **latent ability scores (θ)**, which represents their test-taking proficiency/abilities for different categories. These scores are dynamically updated after each response, ensuring real-time adaptation. The system uses various estimation techniques:
-- **Maximum Likelihood Estimation (MLE):** Updates ability estimates based on correct/incorrect responses.
+### **2.1 Deep Learning-Based Ability Estimation (θ)**
+Each student is assigned a vector of **latent ability scores (θ)**, which represents their test-taking proficiency/abilities for different categories. These scores are dynamically updated after each response, ensuring real-time adaptation. The system integrates multiple AI-driven estimation techniques:
+- **Deep Neural Network (DNN) Regression Model:** Predicts ability updates based on past responses, question difficulty, and response time.
+- **LSTM-Based Sequential Model:** Tracks student progress over time, capturing long-term ability trends.
 - **Bayesian Estimation (MAP/EAP):** Uses prior distributions to refine ability estimates, especially for students with limited response data.
 
-### **2.2 Item Characterization Using the 3PL Model**
+### **2.2 AI-Driven Item Characterization Using MIRT**
 Each question is parameterized using the **Three-Parameter Logistic (3PL) model**, defined as:
 
 \[ P_i(\theta) = c_i + (1 - c_i) \frac{1}{1 + e^{-a_i(\theta - b_i)}} \]
@@ -23,10 +24,12 @@ where:
 
 A future **4PL extension** may introduce a slipping parameter \( d_i \) to account for careless mistakes.
 
-### **2.3 Adaptive Question Selection**
-- After each response, the system updates \( 	theta \) and selects the next question to maximize information gain.
-- Items are chosen based on **maximum Fisher information**, ensuring that the test remains informative for the student’s current skill level.
+### **2.3 AI-Optimized Adaptive Question Selection**
+- After each response, the system updates \( 	theta \) and selects the next question to maximize information gain, using a **Neural Network model trained on past response data**.
+- **Fisher information is used as an input feature** to guide the neural network toward selecting optimal questions.
 - The difficulty of subsequent questions dynamically adjusts, keeping the student in a zone of optimal challenge (neither too easy nor too hard).
+- Additionally, a student will be retested on questions they miss, and the permutation of **distractors** will be optimized using ML to select the most effective incorrect answer choices.
+- **Distractor optimization is also informed by Fisher Information**, ensuring that incorrect answer choices provide meaningful learning experience rather than random selections.
 
 ### **2.4 Student Toolkit for Test-Taking Strategies**
 - The system maintains a **personalized Toolkit** of research-backed, test-taking strategies for each student.
@@ -55,7 +58,6 @@ After each question, appropriate values of \( 	theta \) are updated using:
 - **MLE updates** based on response patterns.
 - **MAP estimation** with priors when student data is limited.
 - **EAP estimation** integrating all past responses for a stable estimate.
-- Other methods for determining what ability value(s) is/are associated with a particular item.
 
 ### **3.4 Feedback and Reinforcement**
 - Students receive immediate feedback on their answers.
